@@ -3875,7 +3875,7 @@ public:
                          int this_index_number_has_been_used = false;
 
 
-                         if ((the_integer_conversion_of_substring > 0) && (the_integer_conversion_of_substring < MAX_INT_SIZE));
+                         if ((the_integer_conversion_of_substring > 0) && (the_integer_conversion_of_substring < MAX_INT_SIZE))
                          {
                               // test to make sure the index number has not been used
                               for (i=0; i<tile_index.size(); i++)
