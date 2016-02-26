@@ -12944,7 +12944,7 @@ string convoit_it(int i)
 {
   char buffer [33];
   scanf ("%d",&i);
-  itoa (i,buffer,10);
+  sprintf (buffer,"%d",i);
   string s = buffer;
   return s;
 }
