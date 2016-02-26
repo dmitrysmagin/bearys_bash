@@ -137,7 +137,7 @@ SAMPLE *ball_bounce_sample;
 
 #define ADD_ROCK(x, y) SAMPLE* x##y##_sample;
 #include "rock_list.hpp"
-#undef ADD_ROCK()
+#undef ADD_ROCK
 
 
 
@@ -1015,7 +1015,7 @@ int load_level(const char *address);
 
 float point_on_ramp_y(int ramp_index_num, float xx);
 
-int fill_with_boundry(int xx, int yy, int xx2, int yy2, int boundry_tile);
+void fill_with_boundry(int xx, int yy, int xx2, int yy2, int boundry_tile);
 
 int get_map_width();
 int get_map_height();
@@ -1203,7 +1203,7 @@ void play_random_splat_sound()
 
 
 
-int add_splat_sound_to_list(char *address)
+void add_splat_sound_to_list(char *address)
 {
     splat_sound_struct gimp_splat_sound_struct;
     
@@ -1211,7 +1211,7 @@ int add_splat_sound_to_list(char *address)
     if (!gimp_splat_sound_struct.sound)
     {
         my_error_message2("No Sample: %s", address);
-        return -1;
+        return;
     }    
     
     splat.push_back(gimp_splat_sound_struct);
@@ -1513,7 +1513,7 @@ public:
            {
             infile2.close();
             rectfill(screen, 100, 100, SCREEN_W-100, SCREEN_H-100, makecol(64,16,0));
-            textprintf_centre(screen, font_small, SCREEN_W/2, SCREEN_H/2-text_height(font_small)/2-7, makecol(255,128+16,128), "unable to load level", filename);
+            textprintf_centre(screen, font_small, SCREEN_W/2, SCREEN_H/2-text_height(font_small)/2-7, makecol(255,128+16,128), "unable to load level");
             textprintf_centre(screen, font_small, SCREEN_W/2, SCREEN_H/2-text_height(font_small)/2+5, makecol(255,255,255), "\"%s\"", filename);
             readkey();
             return -1;
@@ -1586,7 +1586,7 @@ public:
            {
             infile2.close();
             rectfill(screen, 100, 100, SCREEN_W-100, SCREEN_H-100, makecol(64,16,0));
-            textprintf_centre(screen, font_small, SCREEN_W/2, SCREEN_H/2-text_height(font_small)/2-7, makecol(255,128+16,128), "unable to load level", filename);
+            textprintf_centre(screen, font_small, SCREEN_W/2, SCREEN_H/2-text_height(font_small)/2-7, makecol(255,128+16,128), "unable to load level");
             textprintf_centre(screen, font_small, SCREEN_W/2, SCREEN_H/2-text_height(font_small)/2+5, makecol(255,255,255), "\"%s\"", filename);
             readkey();
             return -1;
@@ -1634,7 +1634,7 @@ vector<level_list_item_class> level_list;
 
 
 
-int add_level_to_list(const char *filename)
+void add_level_to_list(const char *filename)
 {
     if (filename != title_screen_level)
     {
@@ -1773,7 +1773,7 @@ void draw_jewel_centered(int item_type, float map_x, float map_y)
      while (x_spot > jewel_shimmer_spacing) x_spot -= jewel_shimmer_spacing;
      while (y_spot > jewel_shimmer_spacing) y_spot -= jewel_shimmer_spacing;
 
-     BITMAP *b;
+     BITMAP *b=NULL;
 
      switch (item_type)
      {
@@ -2054,11 +2054,11 @@ public: // this it's high security bank software!!
         if (is_ducking) {size.y += 12; map_pos.y-=12;}
         is_ducking = false;
         }
-    int move_right(void) {
+    void move_right(void) {
         moving_direction = MOVING_RIGHT;
         facing_right = true;
         }
-    int move_left(void) {
+    void move_left(void) {
         moving_direction = MOVING_LEFT;
         facing_right = false;
         }
@@ -2732,7 +2732,7 @@ public:
         jump_x_velocity_boost = 0.0f;
 
         anim_rate=18;
-        anim_counter= (rand() & anim_rate-1);
+        anim_counter= (rand() & (anim_rate-1));
         strength = 5;
 
         can_be_jumped_on = true;
@@ -2760,7 +2760,7 @@ public:
         jump_x_velocity_boost = 2.0f;
 
         anim_rate=18-4;
-        anim_counter= (rand() & anim_rate-1);
+        anim_counter= (rand() & (anim_rate-1));
         strength = 5;
 
         can_be_jumped_on = true;
@@ -3001,7 +3001,7 @@ public:
 
     //bool set_over_switch(int switch_index_num) { on_switch_stick = switch_index_num; }
 
-    bool check_switch_behind_enemy()
+    void check_switch_behind_enemy()
     {
         bool good_to_go = false;
         int switch_num = -1;
@@ -3558,6 +3558,7 @@ public:
         gimp_background_struct.scroll_rate = scroll_rate;
         gimp_background_struct.index_num = -1;
         background.push_back(gimp_background_struct);
+        (void)index_num; // Shut up warning
     }    
 
     void add_empty_background(char *img_filename=DEFAULT_BACKGROUND, bool loop_x=true, bool loop_y=false, int x_offset=0, int y_offset=0, float scroll_rate=0.75f, float x_speed=0.0f, float y_speed=0.0f, int index_num=1)
@@ -3580,6 +3581,7 @@ public:
         gimp_background_struct.scroll_rate = scroll_rate;
         gimp_background_struct.index_num = -1;
         background.push_back(gimp_background_struct);
+        (void)index_num; // Shut up warning
     }    
 
     void update_backgrounds()
@@ -3603,7 +3605,7 @@ public:
         if (!infile)
            {
             rectfill(screen, 100, 100, SCREEN_W-100, SCREEN_H-100, makecol(64,16,0));
-            textprintf_centre(screen, font_small, SCREEN_W/2, SCREEN_H/2-text_height(font_small)/2-7, makecol(255,128+16,128), "unable to load map, cannot find .lv2 file", filename);
+            textprintf_centre(screen, font_small, SCREEN_W/2, SCREEN_H/2-text_height(font_small)/2-7, makecol(255,128+16,128), "unable to load map, cannot find .lv2 file");
             textprintf_centre(screen, font_small, SCREEN_W/2, SCREEN_H/2-text_height(font_small)/2+5, makecol(255,255,255), "\"%s\"", filename);
             readkey();
             return 1;
@@ -3640,7 +3642,7 @@ public:
         // find the beginning of the map in the .lv2 file
         //allegro_message("here");
         
-        int num_of_found_map=-1;
+        //int num_of_found_map=-1;
         while ((!infile.eof()) && (!load_up_the_dang_map))
         {
            infile.getline(buf, 256);
@@ -4039,7 +4041,7 @@ public:
         if (!outfile)
         {
             rectfill(screen, 100, 100, SCREEN_W-100, SCREEN_H-100, makecol(64,16,0));
-            textprintf_centre(screen, font_small, SCREEN_W/2, SCREEN_H/2-text_height(font_small)/2-7, makecol(255,128+16,128), "unable to save map", filename);
+            textprintf_centre(screen, font_small, SCREEN_W/2, SCREEN_H/2-text_height(font_small)/2-7, makecol(255,128+16,128), "unable to save map");
             textprintf_centre(screen, font_small, SCREEN_W/2, SCREEN_H/2-text_height(font_small)/2+5, makecol(255,255,255), "\"%s\"", filename);
             readkey();
             return 1;
@@ -4210,7 +4212,7 @@ int set_boundry_block(int xx, int yy, int boundry_tile)
     return 0;
 }
 
-int fill_with_boundry(int xx, int yy, int xx2, int yy2, int boundry_tile)
+void fill_with_boundry(int xx, int yy, int xx2, int yy2, int boundry_tile)
 {
     { // test to see if the input is valid
         if (xx < 0) xx = 0;
@@ -4221,8 +4223,8 @@ int fill_with_boundry(int xx, int yy, int xx2, int yy2, int boundry_tile)
         if (yy2 < 0) yy2 = 0;
         if (xx2 > MAX_MAP_WIDTH-1) xx2 = MAX_MAP_WIDTH-1;
         if (yy2 > MAX_MAP_HEIGHT-1) yy2 = MAX_MAP_HEIGHT-1;
-        if (xx > xx2) return 1;
-        if (yy > yy2) return 1;
+        if (xx > xx2) return;
+        if (yy > yy2) return;
     }
 
     int h=0;
@@ -4446,16 +4448,16 @@ public:
         if (!infile2)
            {
             rectfill(screen, 100, 100, SCREEN_W-100, SCREEN_H-100, makecol(64,16,0));
-            textprintf_centre(screen, font_small, SCREEN_W/2, SCREEN_H/2-text_height(font_small)/2-7, makecol(255,128+16,128), "unable to load level", filename2);
+            textprintf_centre(screen, font_small, SCREEN_W/2, SCREEN_H/2-text_height(font_small)/2-7, makecol(255,128+16,128), "unable to load level");
             textprintf_centre(screen, font_small, SCREEN_W/2, SCREEN_H/2-text_height(font_small)/2+5, makecol(255,255,255), "\"%s\"", filename2);
             readkey();
             return 1;
            }
 
         unsigned int data_input_mode = 0;
-        int h=0;
-        int k=0;
-        int gimpInt=0;
+        //int h=0;
+        //int k=0;
+        //int gimpInt=0;
         clear();
         // interpret map file
         
@@ -4687,13 +4689,13 @@ public:
         if (!outfile)
         {
             rectfill(screen, 100, 100, SCREEN_W-100, SCREEN_H-100, makecol(64,16,0));
-            textprintf_centre(screen, font_small, SCREEN_W/2, SCREEN_H/2-text_height(font_small)/2-7, makecol(255,128+16,128), "unable to save map", filename);
+            textprintf_centre(screen, font_small, SCREEN_W/2, SCREEN_H/2-text_height(font_small)/2-7, makecol(255,128+16,128), "unable to save map");
             textprintf_centre(screen, font_small, SCREEN_W/2, SCREEN_H/2-text_height(font_small)/2+5, makecol(255,255,255), "\"%s\"", filename);
             readkey();
             return 1;
         }
 
-        int h=0;
+        //int h=0;
         int k=0;
         outfile << "//.lev file for Beary's Bash by Mark Oates" << endl;
         outfile << "// questions? comments? euph_boy@hotmail.com" << endl;
@@ -5372,6 +5374,7 @@ bool is_switch_active(int block_number)
     {
         if (current_level.switch_stick[i].index_num == block_number) return current_level.switch_stick[i].active;
     }
+    return false;
 }
 
 
@@ -5429,12 +5432,12 @@ public:
 
     // ---
 
-    float top(float f) { y = f; }
-    float left(float f) { x = f; }
-    float bottom(float f) { y = f-SCREEN_H; }
-    float right(float f) { x = f-SCREEN_W; }
-    float center(float f) { x = f-SCREEN_W/2; }
-    float middle(float f) { y = f-SCREEN_H/2; }
+    void top(float f) { y = f; }
+    void left(float f) { x = f; }
+    void bottom(float f) { y = f-SCREEN_H; }
+    void right(float f) { x = f-SCREEN_W; }
+    void center(float f) { x = f-SCREEN_W/2; }
+    void middle(float f) { y = f-SCREEN_H/2; }
 
     float top() { return y; }
     float left() { return x; }
@@ -6804,7 +6807,7 @@ public:
     {
          if (!active) return;
 
-         BITMAP *b;
+         BITMAP *b=NULL;
 
          switch(type)
          {
@@ -6819,7 +6822,7 @@ public:
                   break;
          }
 
-         draw_sprite(buffer, b, (int)x-b->w/2-(int)camera.x, (int)y-b->h/2-(int)camera.y);
+         if (b) draw_sprite(buffer, b, (int)x-b->w/2-(int)camera.x, (int)y-b->h/2-(int)camera.y);
     }
 };
 
@@ -6833,7 +6836,7 @@ public:
 
     void add_particles(float xx, float yy, float velocity_xx=0, float velocity_yy=0)
     {
-         int counter = 50;
+         //int counter = 50;
 
          velocity_xx /= 2;
          velocity_yy /= 2;
@@ -7188,7 +7191,7 @@ bool is_switch_stick(int tile_num)
 
 bool player_on_switch_block = false;
 
-bool check_switch_behind_player()
+void check_switch_behind_player()
 {
      int block_below_block_behind_player = block_type_at(player.get_center_int(), player.get_middle_int()+16);
      int block_behind_player = block_type_at(player.get_center_int(), player.get_middle_int()+16+16);
@@ -7758,7 +7761,7 @@ int save_lv2_file(const char *fn)
         if (!outfile)
         {
             rectfill(screen, 100, 100, SCREEN_W-100, SCREEN_H-100, makecol(64,16,0));
-            textprintf_centre(screen, font_small, SCREEN_W/2, SCREEN_H/2-text_height(font_small)/2-7, makecol(255,128+16,128), "unable to save map", fn);
+            textprintf_centre(screen, font_small, SCREEN_W/2, SCREEN_H/2-text_height(font_small)/2-7, makecol(255,128+16,128), "unable to save map");
             textprintf_centre(screen, font_small, SCREEN_W/2, SCREEN_H/2-text_height(font_small)/2+5, makecol(255,255,255), "\"%s\"", fn);
             readkey();
             return 1;
@@ -8018,6 +8021,7 @@ bool is_a_locked_or_unlocked_door(int tile_num)
               || (door_type == DOOR_TYPE_UNLOCKED_SILVER))
               return true;
     }
+    return false;
 }
 
 
@@ -8031,16 +8035,18 @@ bool OLD_is_a_locked_or_unlocked_door(int tile_num)
               || (current_level.door[tile_num-1].type == DOOR_TYPE_UNLOCKED))
               return true;
     }
+    return false;
 }
 
 void draw_locked_or_unlocked_door(int door_num, int x, int y)
 {
-    BITMAP *image_to_draw;
+    //BITMAP *image_to_draw;
 
     //if (current_level.door[door_num-1].type == DOOR_TYPE_LOCKED) image_to_draw = door2_locked;
     //else if(current_level.door[door_num-1].type == DOOR_TYPE_UNLOCKED) image_to_draw = door2_unlocked;
 
     //if (image_to_draw) draw_sprite(buffer, image_to_draw, (int)(x-camera_x), (int)(y-camera_y));
+    (void)door_num; (void)x; (void)y; // Shut up warning
 }
 
 
@@ -8249,7 +8255,7 @@ void make_drops(int drops, float xx, float yy)
     if (drops < 0) drops = 0;
 
     int k=0;
-    bool there_are_still_drops = false;
+    //bool there_are_still_drops = false;
     for (k=0; k<drops; k++)
     {
         blood_drop_class gimp_blood_drops_class;
@@ -8265,7 +8271,7 @@ void make_drops2(int drops, float xx, float yy)
     if (drops < 0) drops = 0;
 
     int k=0;
-    bool there_are_still_drops = false;
+    //bool there_are_still_drops = false;
     for (k=0; k<drops; k++)
     {
         blood_drop_class gimp_blood_drops_class;
@@ -9589,7 +9595,7 @@ void draw_picked_up_items()
     int item_spacing = 16;
     int x_cursor = 0;
 
-    BITMAP *img;
+    BITMAP *img=NULL;
 
 
     for (int k=0; k<picked_up_item.size(); k++)
@@ -9714,6 +9720,7 @@ void _draw_ms_background(BITMAP *buffer, BITMAP *bg, int x_off, int y_off, float
 
 void _draw_ms_background_loop_x(BITMAP *b, BITMAP *bg, int x_off, int y_off, float rate)
 {
+    (void)b; // Shut up warning
     x_off = -x_off + (int)(camera_x*rate);
     int y_point = y_off - (int)(camera_y*rate);
 
@@ -9731,6 +9738,7 @@ void _draw_ms_background_loop_x(BITMAP *b, BITMAP *bg, int x_off, int y_off, flo
 
 void _draw_ms_background_loop_y(BITMAP *b, BITMAP *bg, int x_off, int y_off, float rate)
 {
+    (void)b; // Shut up warning
     y_off = -y_off + (int)(camera_y*rate);
     int x_point = x_off - (int)(camera_x*rate);
 
@@ -9748,6 +9756,7 @@ void _draw_ms_background_loop_y(BITMAP *b, BITMAP *bg, int x_off, int y_off, flo
 
 void _draw_ms_background_loop_x_y(BITMAP *b, BITMAP *bg, int x_off, int y_off, float rate)
 {
+    (void)b; // Shut up warning
     x_off = -x_off + (int)(camera_x*rate);
     y_off = -y_off + (int)(camera_y*rate);
 
@@ -10081,7 +10090,7 @@ void draw_player_stats_aa_fblend(float xx=0.0f)
 
     draw_trans_sprite(buffer, stat_bground_hearts, 65-10+3+(int)((smooth_stats_counter2)*(-1))-1+13, 10-1);
 
-    //fblend_add(stat_bground_hearts, buffer, 65-10+3+(int)(xx)-1+13, 10-1, 255);
+    (void)xx; //fblend_add(stat_bground_hearts, buffer, 65-10+3+(int)(xx)-1+13, 10-1, 255);
 
     int len = (int)(stat_hearts->w*(player.energy/player.max_energy));
     masked_blit(stat_hearts, buffer, 0, 0, 65-10+3+(int)((smooth_stats_counter2)*(-1))-1+13+3, 10-1, len, stat_hearts->h);
@@ -10113,7 +10122,7 @@ void draw_player_stats_aa_fblend_no_timers(float xx=0.0f)
 
     draw_trans_sprite(buffer, stat_bground_hearts, 65-10+3+(int)((smooth_stats_counter2)*(-1))-1+13, 10-1);
 
-    //fblend_add(stat_bground_hearts, buffer, 65-10+3+(int)(xx)-1+13, 10-1, 255);
+    (void)xx; //fblend_add(stat_bground_hearts, buffer, 65-10+3+(int)(xx)-1+13, 10-1, 255);
 
     int len = (int)(stat_hearts->w*(player.energy/player.max_energy));
     masked_blit(stat_hearts, buffer, 0, 0, 65-10+3+(int)((smooth_stats_counter2)*(-1))-1+13+3, 10-1, len, stat_hearts->h);
@@ -10133,7 +10142,7 @@ void draw_player_stats_aa(float xx=0.0f)
 {
     set_multiply_blender(255,255,255,255-128);
 
-    //xx=0;
+    (void)xx; //xx=0;
 
     //xx = xx*2;
 
@@ -10195,7 +10204,7 @@ void draw_player_stats(float xx=0.0f)
 {
     set_multiply_blender(255,255,255,255-128);
 
-    //xx=0;
+    (void)xx; //xx=0;
 
     //xx = xx*2;
 
@@ -11207,7 +11216,7 @@ int go_in_door(int door_num)
 
     if (map_num_to_load)
     {
-        int the_array_index_number_of_the_map_with_the__index_num__equal_to_the_new_map_of_the_door = -1;
+        //int the_array_index_number_of_the_map_with_the__index_num__equal_to_the_new_map_of_the_door = -1;
 
         if (map_num_to_load > current_level.number_of_maps)
         {
@@ -11653,7 +11662,7 @@ int get_on_a_ramp_judge()
     //     the player is within the ramp coords after velocity
 
 
-    bool player_gets_on_a_ramp = false;
+    //bool player_gets_on_a_ramp = false;
 
     bool above_ramp_line_before_velocity = false;
     bool below_ramp_line_after_velocity = false;
@@ -11720,7 +11729,7 @@ int get_on_a_ramp_judge()
                 {
                     player.get_on_ramp(current_map.ramp[xx].index_num);
                     //my_error_message("SNARF");
-                    player_gets_on_a_ramp = true;
+                    //player_gets_on_a_ramp = true;
                     return 1;
                 }
             }
@@ -11765,6 +11774,7 @@ float point_on_ramp_y(int ramp_index_num, float xx)
            //return point_on_a_line_y(current_map.ramp[s].top_x, current_map.ramp[s].top_y, current_map.ramp[s].bottom_x, current_map.ramp[s].bottom_y, xx);
         }
     }
+    return -1;
 }
 
 //////////////////////////////////////////////////////////
@@ -12125,7 +12135,7 @@ void destroy_game(void)
 
 #define ADD_ROCK(x, y) destroy_sample( x##y##_sample );
 #include "rock_list.hpp"
-#undef ADD_ROCK()
+#undef ADD_ROCK
 
 
 
@@ -12316,8 +12326,8 @@ void draw_pause_menu(void)
         textprintf(buffer, font_x_small, SCREEN_W-text_length(font_x_small, version_number)-5-1, SCREEN_H-text_height(font_x_small)-3, BLACK, version_number);
         textprintf(buffer, font_x_small, SCREEN_W-text_length(font_x_small, version_number)-5, SCREEN_H-text_height(font_x_small)-3, WHITE, version_number);
 
-        int this_x_var = 115;
-        int this_y_var = 220;
+        //int this_x_var = 115;
+        //int this_y_var = 220;
         
 
         //fblend_rect_trans(buffer, 80, 60, SCREEN_W-80*2, SCREEN_H-60*2, BLACK, 255/2);
@@ -12868,7 +12878,7 @@ void do_logic(void)
 
 void draw_item_centered(int item_type, int x, int y)
 {
-     BITMAP *b;
+     BITMAP *b=NULL;
 
            switch (item_type)
            {
@@ -12897,7 +12907,7 @@ void draw_power_ups()
 {
     int k=0;
 
-    BITMAP *b;
+    //BITMAP *b;
 
     for (k=0; k<current_level.power_up.size(); k++)
     {
@@ -13147,6 +13157,7 @@ void game_loop()
 
 int main(int argc, char *argv[])
 {
+   (void)argc;
    arg_string = argv[0];
    if (initialize() == 1) allegro_message("initialization failed");
 
