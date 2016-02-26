@@ -1,0 +1,11 @@
+ADD_ROCK(iso_rock, 1)
+ADD_ROCK(iso_rock, 2)
+ADD_ROCK(iso_rock, 3)
+ADD_ROCK(iso_rock, 4)
+ADD_ROCK(iso_rock, 5)
+ADD_ROCK(iso_rock, 6)
+ADD_ROCK(iso_rock, 7)
+ADD_ROCK(iso_rock, 8)
+ADD_ROCK(iso_rock, 9)
+ADD_ROCK(iso_rock, 10)
+
