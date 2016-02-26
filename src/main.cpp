@@ -233,8 +233,8 @@ char *arg_string;
 char buf[256];
 char *ptrbuf;
 
-bool page_flipping_on=true;
-bool smooth_as_possible=true;
+bool page_flipping_on=false;
+bool smooth_as_possible=false;
 bool abort_game=false;
 
 bool keyboard_available=false;
@@ -643,11 +643,14 @@ int initialize_graphics(void)
 
     set_color_depth(16);
 
-    if (set_gfx_mode(GFX_AUTODETECT_FULLSCREEN, 320, 240, 0, 0) != 0)
+    if (set_gfx_mode(GFX_AUTODETECT_WINDOWED, 320, 240, 0, 0) != 0)
     {
-       set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
-       allegro_message("Error setting video mode\n%s\n", allegro_error);
-       return 1;
+      if (set_gfx_mode(GFX_AUTODETECT_FULLSCREEN, 320, 240, 0, 0) != 0)
+      {
+        set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
+        allegro_message("Error setting video mode\n%s\n", allegro_error);
+        return 1;
+      }
     }
 
     if (page_flipping_on)
@@ -744,7 +747,7 @@ int initialize(void)
 
 
     request_refresh_rate(72);
-
+#if 0
     //int ref_rate = 0;
     int ref_rate = get_refresh_rate();
 
@@ -771,7 +774,7 @@ int initialize(void)
     {
        write_notice(font_small, 10, SCREEN_H-44-14*2, makecol(64, 255-32, 0), "refresh rate @ %d - page flipping available", ref_rate);
     }
-
+#endif
     if (initialize_sound() != 0)
     {
         allegro_message("unable to initialze sound");
